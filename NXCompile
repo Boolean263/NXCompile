@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
+import argparse
+
+from keysyms import XComposeNames
+
+##
+## Functions
+##
+
+def warn(*args, **kwargs):
+    """\
+    Prints a warning message to stderr.
+    """
+    kwargs['file'] = sys.stderr
+    print(*args, **kwargs)
+
+def XComposeSequence(s, target):
+    """\
+    Given a string and a target output, generate the XCompose syntax
+    that allows typing Compose + the string to generate the target.
+    """
+    seq = "<Multi_key> "
+    for c in s:
+        seq += "<" + XComposeNames.get(c, c) + "> "
+    seq += ': "' + target.replace('"', '\\"').replace('\\', '\\\\') + '"'
+    return seq
+
+##
+## Main Program
+##
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+            description="Compile key sequences for use by XCompose")
+    parser.add_argument("-A", "--no-arrow-keys", dest="arrow_keys",
+            action="store_false",
+            help="Disable treating ←↑→↓ in sequence as arrow keys")
+    parser.add_argument("-S", "--no-special-keys", dest="special_keys",
+            action="store_false",
+            help="Disable treating ␈␉␊␍␛␡ in sequence as keyboard keys")
+    parser.add_argument("-s", "--strip", dest="strip",
+            action="store_true",
+            help="Strip comments and blank lines instead of copying")
+    parser.add_argument("-n", "--show-names", dest="show_names",
+            action="store_true",
+            help="Add comments with names of input files to output")
+    parser.add_argument("-o", "--output", metavar="OUTFILE", dest="outfile",
+            type=argparse.FileType('wt', encoding='utf-8'),
+            default=sys.stdout,
+            help="Output file (default:stdout)")
+    parser.add_argument("infiles", metavar="INFILE",
+            nargs='*',
+            type=argparse.FileType('rt', encoding='utf-8'),
+            default=[sys.stdin],
+            help="Input file(s) (default:stdin)")
+
+    args = parser.parse_args()
+
+    if args.arrow_keys:
+        XComposeNames[u"←"] = "Left"
+        XComposeNames[u"↑"] = "Up"
+        XComposeNames[u"→"] = "Right"
+        XComposeNames[u"↓"] = "Down"
+
+    if args.special_keys:
+        XComposeNames[u"␈"] = "BackSpace"
+        XComposeNames[u"␉"] = "Tab"
+        XComposeNames[u"␊"] = "Linefeed"
+        XComposeNames[u"␍"] = "Return"
+        XComposeNames[u"␛"] = "Escape"
+        XComposeNames[u"␡"] = "Delete"
+
+    sequences = {}
+
+    for f in args.infiles:
+        linenumber = 0
+        if args.show_names:
+            args.outfile.write('\n###\n### {file}\n###\n'.format(file=f.name))
+        for line in f:
+            line = line.rstrip("\n")
+            linenumber += 1
+            if line.startswith("include"):
+                args.outfile.write(line+"\n")
+                continue
+            if line == "" or line[0] == "#":
+                if not args.strip:
+                    args.outfile.write(line+"\n")
+                continue
+            try:
+                target, sequence = line.split("\t", 2)
+            except ValueError:
+                warn("No tab in {file} line {line}; invalid pattern"
+                        .format(file=f.name, line=linenumber))
+                if not args.strip:
+                    args.outfile.write('#'+line+"\n")
+                continue
+            for s in sequences.keys():
+                if s.startswith(sequence) or sequence.startswith(s):
+                    warn("Warning: Sequence '{seq}' for '{tgt}' (specified in {file} line {line}) clashes with previous sequence '{oldseq}' for '{oldtgt}'"
+                            .format(seq=sequence, tgt=target, oldseq=s, oldtgt=sequences[s]))
+            sequences[sequence] = target
+            args.outfile.write(XComposeSequence(sequence, target)+"\n")
+
+
+#
+# Editor modelines - http://www.wireshark.org/tools/modelines.html
+#
+# Local variables:
+# c-basic-offset: 4
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:
+#
+# vi:set shiftwidth=4 tabstop=4 expandtab:
+# indentSize=4:tabSize=4:noTabs=true:
