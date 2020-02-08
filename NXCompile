@@ -39,7 +39,7 @@ if __name__ == '__main__':
             help="Disable treating ←↑→↓ in sequence as arrow keys")
     parser.add_argument("-S", "--no-special-keys", dest="special_keys",
             action="store_false",
-            help="Disable treating ␈␉␊␍␛␡ in sequence as keyboard keys")
+            help="Disable treating ␈␉␊␍␛␡◆ in sequence as keyboard keys")
     parser.add_argument("-s", "--strip", dest="strip",
             action="store_true",
             help="Strip comments and blank lines instead of copying")
@@ -58,12 +58,14 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # This is the hard-coded behaviour of XCompile
     if args.arrow_keys:
         XComposeNames[u"←"] = "Left"
         XComposeNames[u"↑"] = "Up"
         XComposeNames[u"→"] = "Right"
         XComposeNames[u"↓"] = "Down"
 
+    # This is just inspired by the above
     if args.special_keys:
         XComposeNames[u"␈"] = "BackSpace"
         XComposeNames[u"␉"] = "Tab"
@@ -71,6 +73,7 @@ if __name__ == '__main__':
         XComposeNames[u"␍"] = "Return"
         XComposeNames[u"␛"] = "Escape"
         XComposeNames[u"␡"] = "Delete"
+        XComposeNames[u"◆"] = "Multi_key"
 
     sequences = {}
 
