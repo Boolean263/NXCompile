@@ -1,0 +1,37 @@
+# This is an example XCompile source mapping file.
+
+# Lines starting with a '#', and blank lines, are passed through to the
+# output unaltered, because they have no effect on XCompose. You can use
+# the `-s` option to NXCompile to have these lines ignored entirely.
+
+
+# Syntax: The desired output is first, then a tab character,
+# then the input sequence.
+
+☺	:)
+♥	<3
+Ç	C,
+
+# Output can be multiple characters long in most recent versions of linux.
+# (In practice, excessively long outputs can cause issues.)
+Hello World	hw
+Yours truly,	yt
+ಠ_ಠ	0_0
+
+
+# Unlike normal XCompose files, a '#' later in the line is NOT a
+# partial-line comment marker. Otherewise you couldn't have a '#' in
+# your input sequence.
+❶	#1
+❷	#2
+# etc.
+
+# Since a Tab character is used to separate the output text from the
+# input sequence, the output text cannot itself contain a Tab character.
+# Sorry.
+
+# If you use vim as your editor, a modeline like the following may
+# make it easier for you to see and edit your mappings.
+# Other editors likely have similar settings.
+#
+# vim:set noet sts=0 ts=25 list listchars=tab\:\ . fileencoding=utf-8:

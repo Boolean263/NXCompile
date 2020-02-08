@@ -1,0 +1,63 @@
+# This is an example XCompile source mapping file.
+
+# Here I use Roman numerals (Unicode range U+2160 to U+217F) to demonstrate
+# a 'gotcha' with XCompose files.
+# Input sequences cannot have overlapping suffixes. That is, the following
+# sequences are INVALID:
+
+Ⅰ	I
+Ⅱ	II
+Ⅲ	III
+
+# XCompose itself will silently ignore the II and III mappings.
+# NXCompile will give a warning message about them.
+# (And, if you use this file unaltered, for many of the mappings below.)
+
+# To differentiate them, you need some sort of terminating keystroke at
+# the end of the shorter ones. The following three sequences use a
+# trailing space for this purpose:
+
+Ⅰ	I 
+Ⅱ	II 
+Ⅲ	III 
+
+# Note that some text editors and source-control software strip off
+# trailing spaces in text files.
+
+# My personal preference is to use a meaningful terminating keystroke
+# where possible. In this case, I use a capital R for 'Roman' to indicate
+# the end of the key sequence.
+
+Ⅰ	IR
+Ⅱ	IIR
+Ⅲ	IIIR
+Ⅳ	IVR
+Ⅴ	VR
+Ⅵ	VIR
+Ⅶ	VIIR
+Ⅷ	VIIIR
+Ⅸ	IXR
+Ⅹ	XR
+Ⅺ	XIR
+Ⅻ	XIIR
+Ⅼ	LR
+Ⅽ	CR
+Ⅾ	DR
+Ⅿ	MR
+
+ⅰ	iR
+ⅱ	iiR
+ⅲ	iiiR
+ⅳ	ivR
+ⅴ	vR
+ⅵ	viR
+ⅶ	viiR
+ⅷ	viiiR
+ⅸ	ixR
+ⅹ	xR
+ⅺ	xiR
+ⅻ	xiiR
+ⅼ	lR
+ⅽ	cR
+ⅾ	dR
+ⅿ	mR

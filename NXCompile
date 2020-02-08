@@ -102,7 +102,9 @@ if __name__ == '__main__':
             for s in sequences.keys():
                 if s.startswith(sequence) or sequence.startswith(s):
                     warn("Warning: Sequence '{seq}' for '{tgt}' (specified in {file} line {line}) clashes with previous sequence '{oldseq}' for '{oldtgt}'"
-                            .format(seq=sequence, tgt=target, oldseq=s, oldtgt=sequences[s]))
+                            .format(seq=sequence, tgt=target,
+                                file=f.name, line=linenumber,
+                                oldseq=s, oldtgt=sequences[s]))
             sequences[sequence] = target
             args.outfile.write(XComposeSequence(sequence, target)+"\n")
 
